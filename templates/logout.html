@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<title></title>
+<link href=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css rel=stylesheet>
+<link href=https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css rel=stylesheet>
+<style>
+    * {
+        user-select: none;
+        overflow: hidden
+    }
+
+    body {
+        background:url("wallpaper2-min.jpg");
+        background-size: cover;
+        background-size: 100% 100%
+    }
+
+    .container-fluid {
+        background: rgba(255, 102, 0, .5);
+        text-align: center
+    }
+
+    .thumbnail {
+        display: inline-block;
+        margin: 0 auto;
+        width: 600px;
+        margin-top: 240px;
+        background: 0 0;
+        border: none;
+        overflow: visible
+    }
+
+    .thumbnail img {
+        width: 295px;
+        height: 295px;
+        margin-top: -150px;
+        transform: rotateY(180deg);
+        box-shadow: 1px 2px 5px 2px rgba(0, 0, 0, .15)
+    }
+
+    .thumbnail a {
+        width: 80%;
+        font-size: 1.4em;
+        padding: .6em 3em
+    }
+
+    h1 {
+        margin: 30px 0;
+        line-height: 55px;
+        font-size: 48px;
+        text-transform: uppercase;
+        color: #fff
+    }
+</style>
+<div class=container-fluid>
+    <div class=thumbnail>
+        <img alt=Chef class=img-circle src="feedback_files/assests/images/chef1.jpg">
+        <h1>You've successfully logout !</h1>
+        <a class="btn btn-warning text-center" href=/>Reset</a>
+    </div>
+</div>
+<script src=https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js></script>
+<script>$(document).ready(function () { $(".container-fluid").css("height", $(window).height()) })</script>

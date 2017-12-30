@@ -1,0 +1,45 @@
+.order_total_count{
+	font-size: 150%;
+	color: #767676;
+}
+
+.list-group-item{
+	border:transparent;
+		border-bottom:2px solid #ddd;
+
+}
+
+#pay_with_cash{
+    padding:6% 18%; 
+    font-size:125%
+}
+.cart h3{
+    margin-top: 10px;
+}
+
+.order_page .options{
+    margin-top: 20px;
+    padding-bottom: 10px;
+}
+
+.order_page .bill{
+    position: fixed;
+    right: 0px;
+}
+.order_page .options{
+    width: 100%;
+    position: fixed;
+    bottom: 0px;
+    background-color: white;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    box-shadow: -2px -1px 5px 1px #ccc;
+}
+
+.order_page .cart_items{
+    
+border:  5px solid #eee;
+margin:0px;
+
+}
+

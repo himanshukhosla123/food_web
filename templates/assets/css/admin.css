@@ -1,0 +1,123 @@
+body{
+    overflow: hidden;
+}
+
+header {
+    width: 100%;
+    height: 50px;
+    background-color: darkorange;
+    text-align: center;
+}
+
+header a {
+    padding: 20px;
+}
+
+.scroll_style::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #F5F5F5;
+    border-radius: 10px;
+}
+
+.scroll_style::-webkit-scrollbar {
+    width: 8px;
+    background-color: #F5F5F5;
+}
+
+.scroll_style::-webkit-scrollbar-thumb {
+    background-color: #AAA;
+    border-radius: 10px;
+    background-image: -webkit-linear-gradient(90deg, rgba(0, 0, 0, .2) 100%);
+}
+
+.nav {
+    background-color: #333;
+    height: 60px;
+}
+
+.nav-tabs > li > a {
+    color: #fff;
+    border-radius: 0;
+    height: 60px;
+    line-height: 40px;
+}
+
+.nav > li > a:hover {
+    background-color: #000;
+    border-color: #000;
+    border-bottom-width: 0;
+}
+
+.tab-content {
+    background-color: #DDDDDD;
+    overflow: auto;
+}
+
+.tab-content button {
+    margin: 4%;
+    height: 50px;
+    width: 80px;
+    font-size: 23px;
+}
+
+.tabel_manager {
+    width: 40%;
+    float: left;
+    padding: 0 10px;
+}
+
+.order_container {
+    width: 40%;
+    float: left;
+    padding: 0 15px;
+}
+
+.order_area {
+    background-color: #ededed;
+    border: 1px solid #ccc;
+    overflow: hidden;
+}
+
+.order_area, .tabel_manager {
+    margin-top: 10px;
+}
+
+.order_area input[type=search] {
+    width: 80%;
+    display: inline-block;
+    margin: 3% 0 3% 2%;
+    padding: 0.6%;
+}
+
+.order_area .col-md-8 {
+    display: inline-block;
+}
+
+.order_content .table th {
+    background-color: #777;
+    color: #fff;
+}
+
+.order_content {
+    overflow-x: hidden;
+    min-height: 300px !important;
+}
+
+.tabel_btn {
+    float: left;
+}
+
+.tabel_btn button {
+    width: 100px;
+}
+
+.decision-btns button {
+    width: 100%;
+    height: auto;
+    margin-top: 20px;
+    font-size: 1.6em;
+}
+
+.bill {
+    margin-top: 10px;
+}

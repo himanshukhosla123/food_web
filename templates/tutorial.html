@@ -1,0 +1,149 @@
+
+<!DOCTYPE html>
+<title>Tutorial | Foodcham</title>
+<meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name=viewport>
+<link href=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css rel=stylesheet>
+<link href="assets/css/main.css" rel=stylesheet>
+<style>
+    body {
+        background: #f2f4f8
+    }
+
+    * {
+        user-select: none
+    }
+
+    .go-throguh-card {
+        box-shadow: 0 0 24px rgba(0, 0, 0, .4);
+        height: 100%;
+        min-height: 700px;
+        width: 100%
+    }
+
+    .go-throguh-card .carousel-inner {
+        min-height: 700px
+    }
+
+    .carousel-indicators li {
+        border: 1px solid #f60
+    }
+
+    .carousel-indicators .active {
+        background: #f60
+    }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0
+    }
+
+    input[type=number] {
+        -moz-appearance: textfield
+    }
+
+    .form-group input[type=number],
+    .form-group input[type=text] {
+        width: 100%;
+        -webkit-box-flex: 1;
+        -ms-flex: 1 0 auto;
+        flex: 1 0 auto;
+        outline: 0;
+        -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+        text-align: left;
+        line-height: 1.21428571em;
+        font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
+        padding: .67857143em 1em;
+        background: #fff;
+        border: 1px solid rgba(34, 36, 38, .15);
+        color: rgba(0, 0, 0, .87);
+        border-radius: .28571429rem;
+        -webkit-transition: box-shadow .1s ease, border-color .1s ease;
+        transition: box-shadow .1s ease, border-color .1s ease;
+        box-shadow: none
+    }
+
+    .error {
+        display: none
+    }
+
+    .carousel-indicators.btn-indicators li {
+        text-indent: 0;
+        width: auto;
+        height: auto;
+        padding: 10px;
+        border-radius: 2px;
+        background-color: #f60
+    }
+
+    .btn {
+        border-radius: 2px;
+        padding: 1em
+    }
+
+    .login-form {
+        display: none
+    }
+
+    .btn.btn-materialize {
+        box-shadow: 8px 10px 20px 0 rgba(0, 0, 0, .25);
+        font-weight: 700;
+        font-size: 1.2em
+    }
+
+    .btn.btn-materialize:active {
+        box-shadow: 2px 4px 8px 0 rgba(0, 0, 0, .25)
+    }
+
+    .skip-fab {
+        position: fixed;
+        bottom: 1.8em;
+        right: 2em;
+        font-size: 1.2em
+    }
+</style>
+<div class="container go-throguh-card">
+    <div class="carousel slide" data-ride=carousel data-wrap=false id=carousel-example-generic style=height:100%!important;min-height:800px>
+        <ol class=carousel-indicators style=bottom:60px>
+            <li data-target=#carousel-example-generic data-slide-to=0 class=active>
+                <li data-target=#carousel-example-generic data-slide-to=1>
+                    <li data-target=#carousel-example-generic data-slide-to=2>
+                        <li data-target=#carousel-example-generic data-slide-to=3>
+                            <li data-target=#carousel-example-generic data-slide-to=4>
+        </ol>
+        <ol class="carousel-indicators btn-indicators" style=bottom:10px>
+            <li data-target=#carousel-example-generic class="btn-materialize carousel-btn-prev">
+                <b>PREVIOUS</b>
+                <li data-target=#carousel-example-generic class="btn-materialize carousel-btn-next">
+                    <b>NEXT</b>
+        </ol>
+        <div class=carousel-inner role=listbox>
+            <div class="item active">
+                <img alt=... class=img-responsive src="tutorial/ss1-01.jpg">
+            </div>
+            <div class=item>
+                <img alt=... class=img-responsive src="tutorial/ss2-01.jpg">
+            </div>
+            <div class=item>
+                <img alt=... class=img-responsive src="tutorial/ss3-01.jpg">
+            </div>
+            <div class=item>
+                <img alt=... class=img-responsive src="tutorial/ss4-01.jpg">
+            </div>
+            <div class=item>
+                <img alt=... class=img-responsive src="tutorial/ss5-01.jpg">
+            </div>
+        </div>
+    </div>
+    <div class=skip-fab>
+        <a href="/home">
+            <span style=padding:10px;color:#fff;background-color:rgba(0,0,0,.5)>
+                <b>Skip Tutorial</b>
+            </span>
+            <span style=padding:10px;background-color:rgba(0,0,0,.5);color:#fff class="glyphicon glyphicon-forward"></span>
+        </a>
+    </div>
+</div>
+<script src=https://code.jquery.com/jquery-2.2.4.min.js></script>
+<script src=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js></script>
+<script>function IsNumber(t) { return /^[0-9]+$/.test(t) } $('.form-group input[type="number"]').keyup(function () { var t = $(this).val(); IsNumber(t) && 10 == t.length ? ($(this).parent().next().slideUp("fast"), $(this).parent().parent().find('input[type="submit"]').removeAttr("disabled")) : ($(this).parent().next().slideDown("fast"), $(this).parent().parent().find('input[type="submit"]').attr("disabled", "true")) }), $(".carousel-btn-next").click(function () { $(".carousel").carousel("next") }), $(".carousel-btn-prev").click(function () { $(".carousel").carousel("prev") }), $(".login-form-btn").click(function () { $(".register-form").fadeOut("fast"), $(".login-form").fadeIn() }), $(".register-form-btn").click(function () { $(".login-form").fadeOut("fast"), $(".register-form").fadeIn() })</script>

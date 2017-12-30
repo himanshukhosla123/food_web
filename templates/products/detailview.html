@@ -1,0 +1,585 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ object.title | title }} | Foodcham{% endblock %}
+
+
+{% block body-content %}
+    <style>
+        #snackbar,.center{text-align:center}#snackbar{visibility:hidden;min-width:250px;margin-left:-125px;background-color:#333;color:#fff;border-radius:2px;padding:16px;position:fixed;z-index:1;left:50%;bottom:30px}#snackbar.show{visibility:visible;-webkit-animation:fadein .5s,fadeout .5s 1.5s;animation:fadein .5s,fadeout .5s 1.5s}@-webkit-keyframes fadein{from{bottom:0;opacity:0}to{bottom:30px;opacity:1}}@keyframes fadein{from{bottom:0;opacity:0}to{bottom:30px;opacity:1}}@-webkit-keyframes fadeout{from{bottom:30px;opacity:1}to{bottom:0;opacity:0}}@keyframes fadeout{from{bottom:30px;opacity:1}to{bottom:0;opacity:0}}.carousel-control.left,.carousel-control.right{background:0 0}.price{float:right}.card{box-shadow:0 2px 2px 0 rgba(0,0,0,.14),0 1px 5px 0 rgba(0,0,0,.12),0 3px 1px -2px rgba(0,0,0,.2)}.product-description{padding:5px}*{box-sizing:border-box}.item{margin:1em}.carousel-control{width:3%}.img-thumb a img{width:100%;height:190px}.nav-tabs>li>a{border:none;font-size:1.3em}.nav>li>a:focus,.nav>li>a:hover{border:none;background:0 0}.nav-tabs>li.active>a,.nav-tabs>li.active>a:focus,.nav-tabs>li.active>a:hover{border:none}.nav-tabs>li>a:after{content:'';display:block;height:3px;width:0;background:0 0;transition:width .5s ease,background-color .5s ease;position:absolute;left:0;margin-top:8px}.nav-tabs>li.active>a:after,.nav-tabs>li.active>a:focus:after,.nav-tabs>li.active>a:hover:after{width:100%;background:#ff660a}#qty-input:hover{cursor:pointer}#make_it_a_deal .modal-dialog{width:85%}#make_it_a_deal .modal-header{padding:10px;background-color:#f60;color:#fff;border-radius:6px;margin:5px;font-family:cursive;border:1px solid rgba(255,255,255,.2)}#make_it_a_deal .modal-content .close{background-color:#fff;height:30px;width:30px;border-radius:100%;color:#000;opacity:1;margin-top:-30px;margin-right:-30px;font-size:28px}#make_it_a_deal .modal-content{background-color:#F8F8F8;margin:50px auto}#make_it_a_deal .thumbnail{margin:0 20px 20px;border-radius:15px;padding:20px 0 10px;border:none;position:relative;box-shadow:1px 1px 5px rgba(0,0,0,.4)}#make_it_a_deal .thumbnail .icon,#make_it_a_deal .thumbnail img{height:120px;font-size:90px}#make_it_a_deal .modal-body .btn{background-color:#fff;border:1px solid #ccc;border-radius:25px;padding:5px 0;width:150px;margin-bottom:-30px}#make_it_a_deal .fa-star,.fa-star-o{color:gold;font-size:16px}#make_it_a_deal .modal-body .selected_item,#make_it_a_deal .modal-footer .btn,#make_it_a_deal .special_price{background-color:#f60;color:#fff}#make_it_a_deal .special_price{position:absolute;right:0;top:20px;padding:5px 10px;font-size:20px;border-top-left-radius:10px;border-bottom-left-radius:10px}.item_btn{transition:all .5s;outline:0!important}.modal-backdrop.in{opacity:.5}#make_it_a_deal .thumbnail select{width:90%;margin:0 10px;padding:7px;box-sizing:border-box}#make_it_a_deal .thumbnail hr{margin:10px 0}#make_it_a_deal .thumbnail select:focus{border:1px solid #f60;outline:0}#make_it_a_deal .thumbnail select option{padding:10px}#make_it_a_deal .thumbnail h6{margin:5px 0;text-transform:capitalize;font-size:14px}#make_it_a_deal .thumbnail h3{margin:0}
+    </style>
+
+    <div class="modal fade" id="make_it_a_deal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         data-backdrop="static">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title center" id="myModalLabel">Make It A Meal</h3>
+                </div>
+
+                <form id='meal-form' method="GET" action="">
+                    <div class="modal-body">
+                        <div class="row center">
+                            {% for meal in add_to_meal %}
+
+                                <div class="col-xs-6 center">
+                                    <div class="thumbnail">
+                                        <div>
+                                            <img class='img-responsive' style="margin-left: 50% ;margin-right: 50%"
+                                                 src="{{ meal.product.get_image_url }}" alt="">
+                                        </div>
+                                        <h4>Pick any 1 {{ meal|title }}</h4>
+                                        <h3>@<i class="fa fa-inr"></i> {{ meal.price }}</h3>
+                                        <hr>
+                                        <div class="row options">
+                                            <div class="col-xs-8">
+                                                <h6>choose your Dish</h6>
+                                                <select>
+                                                    {% for i in meal.product.product_set.all %}
+                                                        <option id='meal-product' name="{{ i }}"
+                                                                value="{{ i }}">{{ i|title }}</option>
+
+                                                    {% endfor %}
+                                                </select>
+
+                                            </div>
+                                            {% if meal.extra_add_ons.count > 0 %}
+                                                <div class="col-xs-4">
+                                                    <h6>Extra Add-Ons</h6>
+                                                    <select style="">
+                                                        {% for i in meal.extra_add_ons.all %}
+                                                            <option value="{{ i }}">{{ i|title }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+
+                                            {% endif %}
+                                        </div>
+                                        <input type="hidden" name="meal-price" value="{{ meal.price }}">
+                                        <input type="radio" name="selected_deal" id="{{ meal }}">
+                                        <label for="" class="btn item_btn ">Add Item</label>
+                                    </div>
+                                </div>
+
+
+                            {% endfor %}
+                        </div>
+                    </div>
+                </form>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal">Close</button>
+                    {% if object.default.meal_option %}
+                        <input id='submit-btn' type="button" class="btn btn-default"
+                               value="Add To Cart">
+                    {% else %}
+                        <input id='submit-btn-void' type="button" class="btn btn-default"
+                               value="Add To Cart">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="content-header" style="margin-top: 50px;">
+        <div class="widget-box">
+            <div class="widget-body">
+                <div class="widget-main">
+                    <div class="container-fluid">
+                        <div>
+                            <ol class="breadcrumb">
+                                <li><a href="{% url 'home' %}"><i class="fa fa-home"></i>Home</a></li>
+                                <li><a href="{% url 'categories' %}">Categories</a></li>
+                                <li class="active">{{ object.title }}</li>
+                            </ol>
+
+                        </div>
+                        <div class="row">
+                            <div class='col-sm-4'>
+                                <div class="thumbnail text-center">
+                                    <div class="thumbnail text-center">
+                                        {% if object.get_image_url %}
+                                            <div>
+                                                <img id='img' alt="" class='img-responsive' width="407" height="282"
+                                                     src='{{ object.get_image_url }}'/>
+                                            </div>
+
+                                        {% endif %}
+                                    </div>
+
+                                    {% if object.veg == 'yes' %}
+                                        <span class="veg-non-veg feature-list"><i><img
+                                                src="{% static 'assets/img/veg_icon-01.png' %}"></i></span>
+                                    {% else %}
+                                        <span class="veg-non-veg feature-list"><i><img
+                                                src="{% static 'assets/img/nonveg-01.png' %}"></i></span>
+                                    {% endif %}
+
+
+                                    <!-- indication for spicy, very spicy or non-spicy, spicy shown here, very-spicy and non-spicy indication shown in successive cards -->
+                                    {% if object.spicy == 'normal' %}
+
+                                    {% elif object.spicy == 'less' %}
+                                        <span class="spicy feature-list"><img
+                                                src="{% static 'assets/img/chilly-01.png' %}"></span>
+                                    {% elif object.spicy == 'very' %}
+                                        <span class="spicy feature-list"><img
+                                                src="{% static 'assets/img/chilly2-01.png' %}"></span>
+                                    {% endif %}
+
+
+                                    <!-- sta rating for each product -->
+                                    <span class="product_rating feature-list">Rating: {{ object.rating|floatformat:"1" }} <span
+                                            class="fa fa-star"></span></span>
+
+
+                                    <!-- button for adding product to wishlist, also trigger for snackbar that says 'product added to your wishlist' when added or 'product removed from your woshlist' when removed  (actual snackbar at the botttom of the page)-->
+
+                                    {% if not request.user.is_authenticated %}
+                                        <span class="titanic titanic-heart feature-list" data-toggle="modal"
+                                              data-target="#login-modal"></span>
+                                    {% else %}
+                                        <span class="titanic titanic-heart feature-list" id="{{ object.id }}"></span>
+                                    {% endif %}
+
+
+
+
+                                    <p class='lead description' style="text-align: justify; padding: 3%;">
+                                        {{ object.description }}
+                                    </p>
+                                    <a href="#" class="rd-more-btn">Read
+                                    More</a>
+
+
+                                </div>
+                            </div>
+                            <div class='col-sm-5'>
+                                <h2 align="center" style="background-color:rgba(0,0,0,0.1);padding: 10px">
+                                    <b>{{ object.title|title }}</b></h2>
+
+
+                                <form id="add-form" method="GET" action="{% url 'cart' %}">
+                                    <p id="snackbar">
+
+                                    </p>
+
+                                    {% if object.variation_set.count > 1 %}
+                                        <h3 id='price1'>{{ object.variation_set.first.price }}</h3>
+                                        <br/>
+                                        <b>{{ object.default.variation_title }}</b>
+                                        <select name='item' class='form-control variation_select'>
+                                            {% for vari_obj in object.variation_set.all %}
+
+
+                                                <option data-sale-price="{{ vari_obj.sale_price }}"
+                                                        data-price="{{ vari_obj.price }}"
+                                                        value="{{ vari_obj.id }}">{{ vari_obj }}</option>
+
+                                            {% endfor %}
+                                        </select>
+
+                                    {% else %}
+
+                                        <input type="hidden" name="item"
+                                               value='{{ object.variation_set.first.id }}'/>
+
+                                        <h3>&#x20b9;<span id='price'>{% if object.variation_set.first.sale_price %}
+                                            {{ object.variation_set.first.sale_price }}</span></h3>
+
+                                            <small class='og-price'
+                                                   style='text-decoration:line-through;color:#ff6600'>{{ object.variation_set.first.price }}</small>
+                                        {% else %}
+
+                                            {{ object.variation_set.first.price }}
+
+
+
+                                        {% endif %}
+                                        </h3>
+
+
+                                    {% endif %}
+                                    <br/>
+
+                                    <div>
+                                        <span class="quantity-minus col-md-2"><p class="fa fa-minus-circle"
+                                                                                 style="color:#fc6a19"></p></span>
+                                        <span class="col-md-2"
+                                              style="margin-top:10px; margin-left: 5px; padding: 0; width: 25px; outline: none; border: none;">
+                                            <input id='qty-input' type="number" min="0" max="10" class="form-control"
+                                                   name='qty' value='1'
+                                                   style="border: none; outline: none; background-color: white!important;"
+                                            /></span>
+                                        <span class="quantity-plus col-md-2" style="padding-left: 0"><p
+                                                class="fa fa-plus-circle" style="color:#fc6a19"></p></span>
+                                    </div>
+
+                                    <br/>
+                                    <br/>
+
+                                    {% if object.default.meal_option %}
+                                        <br/>
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <button type="button" class="btn" data-toggle="modal"
+                                                        data-target="#make_it_a_deal">
+                                                    Add To Cart
+                                                </button>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+
+                                    <br/>
+
+
+                                    <div class="row">
+                                        {% if not object.default.meal_option %}
+                                            <div class="col-md-2">
+                                                <input id='submit-btn' type="button" class="btn btn-default"
+                                                       value="Add To Cart">
+                                            </div>
+                                        {% endif %}
+
+
+                                        {% if add_ons_list|length > 0 %}
+
+                                            <div class="col-md-8 col-md-offset-2 ">
+
+                                                <a class="btn btn-addon" role="button" data-toggle="collapse"
+                                                   href="#collapseExample" aria-expanded="false"
+                                                   aria-controls="collapseExample" style="width:78%">
+                                                    <span style="float:left">Add Ons</span>
+                                                    <span class="glyphicon glyphicon-menu-down"
+                                                          style="left: 30%;"></span>
+
+                                                </a>
+
+
+                                                <div class="collapse" id="collapseExample">
+                                                    <div style="width: 78%;">
+                                                        <ul class="add-on-list">
+                                                            {% for obj in add_ons_list %}
+                                                                <li>
+                                                                    <h4>{{ obj|title }}</h4>
+                                                                    <input id="{{ obj.id }}" type="checkbox"
+                                                                           name="add_ons{{ forloop.counter }}"
+                                                                           value="{{ obj }}"/>
+                                                                    <label for="{{ obj.id }}"><i
+                                                                            class="fa fa-check"></i></label>
+                                                                </li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        {% endif %}
+
+
+                                    </div>
+
+                                    <br/>
+
+                                </form>
+                            </div>
+                        </div>
+                        <br>
+
+                        <div>
+
+                            <h2 align="center" style="background-color:rgba(0,0,0,0.1);padding: 10px">
+                                <b>This Product Goes Best With</b></h2>
+                            <br/>
+                            <!-- Nav tabs -->
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active">
+                                    <a href="#related" aria-controls="home" role="tab" data-toggle="tab">Related
+                                    Dishes</a></li>
+
+
+                                {% for cat in related_category %}
+
+                                    <li role="presentation"><a href="#{{ cat|slugify }}"
+                                                               aria-controls="{{ cat|slugify }}" role="tab"
+                                                               data-toggle="tab">{{ cat|slugify|title }}</a></li>
+
+
+                                {% endfor %}
+                            </ul>
+
+                            <!-- Tab panes -->
+                            <div class="tab-content">
+                                <div role="tabpanel" class="tab-pane active" id="related">
+
+                                    <!-- carousel for first tab -->
+
+                                    <div id="carousel1" class="carousel slide" data-ride="carousel"
+                                         data-interval="false">
+
+                                        <!-- Wrapper for slides -->
+                                        <div class="carousel-inner" role="listbox">
+                                            <div class="item active">
+                                                <div class="container">
+                                                    <div class="row">
+
+                                                        <!-- one product item -->
+                                                        {% for product in related|slice:":3" %}
+
+                                                            <div class="col-md-4">
+
+                                                                <!-- product card -->
+                                                                <div class="card">
+
+                                                                    <!-- producnt thumbnail -->
+                                                                    <div class="img-thumb">
+                                                                        <a href="{{ product.get_absolute_url }}">
+                                                                            {% if product.get_image_url %}
+                                                                                <img src="{{ product.get_image_url }}"
+                                                                                     alt="">{% endif %}
+                                                                        </a>
+                                                                    </div>
+                                                                    <!-- product description -->
+                                                                    <div class="product-description">
+                                                                        <a href="{{ product.get_absolute_url }}">
+                                                                            <h4>{{ product.title }}<span>&#x20b9;{{ product.price }}</span>
+                                                                            </h4></a>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="item">
+                                                <div class="container">
+                                                    <div class="row">
+                                                        {% for product in related|slice:"3:" %}
+
+                                                            <div class="col-md-4">
+
+                                                                <!-- product card -->
+                                                                <div class="card">
+
+                                                                    <!-- producnt thumbnail -->
+                                                                    <div class="img-thumb">
+                                                                        <a href="{{ product.get_absolute_url }}">
+                                                                            {% if product.get_image_url %}
+                                                                                <img src="{{ product.get_image_url }}">{% endif %}
+                                                                        </a>
+                                                                    </div>
+                                                                    <!-- product description -->
+                                                                    <div class="product-description">
+                                                                        <a href="{{ product.get_absolute_url }}">
+                                                                            <h4>{{ product.title }}<span>{{ product.price }}</span>
+                                                                            </h4></a>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        {% endfor %}
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Controls -->
+                                        <a class="left carousel-control" href="#carousel1" role="button"
+                                           data-slide="prev">
+                                            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                                            <span class="sr-only">Previous</span>
+                                        </a>
+                                        <a class="right carousel-control" href="#carousel1" role="button"
+                                           data-slide="next">
+                                            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                                            <span class="sr-only">Next</span>
+                                        </a>
+                                    </div>
+                                </div>
+
+
+                                <!--     ##################   -->
+
+                                {% for cat in related_category %}
+
+                                    <div role="tabpanel" class="tab-pane" id="{{ cat|slugify }}">
+                                        <div id="carousel{{ cat|slugify }}" class="carousel slide" data-ride="carousel">
+
+                                            <!-- Wrapper for slides -->
+                                            <div class="carousel-inner" role="listbox">
+                                                <div class="item active">
+                                                    <div class="container">
+                                                        <div class="row">
+
+                                                            {% for obj in cat.product_set.all|slice:":3" %}
+
+                                                                {% if obj.recommend %}
+                                                                    <div class="col-md-4">
+                                                                        <div class="card">
+                                                                            <div class="img-thumb">
+                                                                                <a href="{{ obj.get_absolute_url }}"><img
+                                                                                        src="{{ obj.get_image_url }}"></a>
+                                                                            </div>
+                                                                            <div class="product-description">
+                                                                                <a href="{{ obj.get_absolute_url }}">
+                                                                                    <h4>{{ obj.title }}<span
+                                                                                            class="price">Rs. 43654</span>
+                                                                                    </h4></a>
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                {% else %}
+                                                                    <div class="col-md-4">
+                                                                        <div class="card">
+                                                                            <div class="img-thumb">
+                                                                                <a href="{{ obj.get_absolute_url }}"><img
+                                                                                        src="{{ obj.get_image_url }}"></a>
+                                                                            </div>
+                                                                            <div class="product-description">
+                                                                                <a href="{{ obj.get_absolute_url }}">
+                                                                                    <h4>{{ obj.title }}<span
+                                                                                            class="price">Rs. 43654</span>
+                                                                                    </h4></a>
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                {% endif %}
+
+                                                            {% endfor %}
+
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="item">
+                                                    <div class="container">
+                                                        <div class="row">
+                                                            {% for obj in cat.product_set.all|slice:"3:6" %}
+
+                                                                <div class="col-md-4">
+                                                                    <div class="card">
+                                                                        <div class="img-thumb">
+                                                                            <a href="{{ obj.get_absolute_url }}"><img
+                                                                                    src="{{ obj.get_image_url }}"></a>
+                                                                        </div>
+                                                                        <div class="product-description">
+                                                                            <a href="{{ obj.get_absolute_url }}">
+                                                                                <h4>{{ obj.title }}<span class="price">Rs. 43654</span>
+                                                                                </h4></a>
+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            {% endfor %}
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <!-- Controls -->
+                                            <a class="left carousel-control" href="#carousel{{ cat|slugify }}"
+                                               role="button"
+                                               data-slide="prev">
+                                                <span class="glyphicon glyphicon-chevron-left"
+                                                      aria-hidden="true"></span>
+                                                <span class="sr-only">Previous</span>
+                                            </a>
+                                            <a class="right carousel-control" href="#carousel{{ cat|slugify }}"
+                                               role="button"
+                                               data-slide="next">
+                                                <span class="glyphicon glyphicon-chevron-right"
+                                                      aria-hidden="true"></span>
+                                                <span class="sr-only">Next</span>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                {% endfor %}
+                                <div role="tabpanel" class="tab-pane" id="messages"></div>
+                                <div role="tabpanel" class="tab-pane" id="settings"></div>
+                            </div>
+                        </div>
+                        <br/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script type="text/javascript">
+        $('.rd-more-btn').click(function () {
+            if ($(this).is('.down')) {
+
+                $(this).prev().css({
+                    'overflow': 'hidden',
+                    'text-overflow': 'ellipsis',
+                    'white-space': 'nowrap',
+                });
+                $(this).removeClass('down').text('Read More');
+
+            }
+
+            else {
+                $(this).prev().css({
+                    'overflow': 'visible',
+                    'text-overflow': 'unset',
+                    'white-space': 'unset',
+                });
+                $(this).addClass('down').text('Show Less');
+            }
+
+        });
+
+        $('.quantity-plus').click(function () {
+            var quantity = parseInt($('#qty-input').val());
+            /* fetch the clicked input field value */
+            if (quantity >= 10) {
+                $('#qty-input').val(10);
+                /* increase the quantity by 1 and place back */
+            } else {
+                $('#qty-input').val(quantity + 1);
+            }
+
+        });
+
+        $('.quantity-minus').click(function () {
+            var quantity = parseInt($('#qty-input').val());
+            /* fetch the clicked input field value */
+            if (quantity != 0) {                                                    /* if the quantity is more than 0 */
+                $('#qty-input').val(quantity - 1);
+                /* decrease the quantity by 1 and place back */
+            }
+        });
+
+        $(document).ready(function () {
+            $(".item_btn").on("click", function () {
+                if (this.classList.contains("selected_item") === true) {
+                    $(this).removeClass("selected_item");
+                    this.innerHTML = "Add Item";
+                    $("#make_it_a_deal input:checked").prop("checked", false);
+                    console.log($("#make_it_a_deal input"));
+                }
+                else {
+                    $(".item_btn").removeClass("selected_item");
+                    $(".item_btn").innerHTML = "Add Item";
+                    $("#make_it_a_deal input:checked").prop("checked", false);
+                    $(this).addClass("selected_item");
+                    this.innerHTML = "Item Added";
+                    $(this).prev().prop("checked", true);
+                }
+            });
+        });
+    </script>
+{% endblock %}

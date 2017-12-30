@@ -1,0 +1,446 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Invoice</title>
+    <link rel="shortcut icon" type="image/png" href="assets/ico/favicon.png"/>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css" rel="stylesheet">
+    <link href="plugins/offline/offline-theme-dark.css" rel="stylesheet">
+    <link href="plugins/offline/offline-language-english.css" rel="stylesheet">
+    <style>
+        body {
+            -webkit-user-select: none;
+            -moz-user-select: -moz-none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .methods button {
+            min-width: 140px;
+            margin: 0 5px;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.4);
+            opacity: 5.74;
+        }
+
+        .modal-content {
+            box-shadow: none;
+            margin-top: 100px;
+        }
+
+        .feedback-high p {
+            font-size: 22px;
+            color: white;
+            font-weight: 600;
+        }
+
+        .feedback-high {
+            background-image: url("feedback_files/assests/images/header-background3.jpg");
+            background-repeat: repeat;
+            background-size: 50%;
+            color: white;
+        }
+
+        .feedback-high h2 {
+            background-color: rgb(255, 102, 10);
+            color: white;
+            border-radius: 5px;
+            padding: 8px 0;
+            font-family: cursive;
+            border: 1px solid rgba(255, 255, 255, .2);
+            box-shadow: 1px 3px 9px rgba(0, 0, 0, .5);
+        }
+
+        .feedback-high .sa-icon.sa-custom {
+            border-radius: 45px;
+            padding: 5px;
+        }
+
+        .feedback-high .confirm {
+            background-color: rgb(255, 102, 10);
+            color: white;
+        }
+
+        .feedback-high .confirm:hover,
+        .feedback-high .confirm:active {
+            background-color: rgb(255, 102, 40);
+            color: white;
+        }
+
+        .feedback-high button.cancel,
+        .feedback-high button.cancel:active,
+        .feedback-high button.cancel:hover {
+            background: white;
+            color: rgb(255, 102, 10);
+        }
+
+        .black {
+            color: #575757;
+        }
+
+        h4 {
+            color: deepskyblue;
+        }
+
+        .close span {
+            font-size: 20px;
+        }
+
+        .orange {
+            background-color: rgb(255, 102, 10);
+            color: white;
+        }
+
+        hr {
+            margin: 5px 0px;
+            border-bottom: 1px solid black;
+        }
+
+        .thanks_note_wrapper {
+            background-color: white;
+            overflow-x: hidden;
+            margin-bottom: 5px;
+        }
+
+        .thanks_note {
+            background-color: #fff;
+            color: black;
+            animation-name: rounds;
+            animation-duration: 20s;
+            font-size: 16px;
+            text-align: right;
+            animation-iteration-count: infinite;
+        }
+
+        @keyframes rounds {
+            0% {
+                transform: translateX(0%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        .btn-primary:hover {
+            color: #fff;
+            background-color: #286090 !important;
+            border-color: #204d74;
+        }
+
+        .btn-primary {
+            color: #fff;
+            background-color: #337ab7 !important;
+            border-color: #2e6da4;
+        }
+
+        .cashReminder button {
+            padding: 11px 19px;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/offline-js/0.7.19/offline.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.js"></script>
+</head>
+
+<body>
+{% csrf_token %}
+<div class="wrapper">
+    <section class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2>
+                    <i class="fa fa-cutlery"></i> Spezia Bistro .
+                    <small class="pull-right">Date: <span id="current_date"></span></small>
+                </h2>
+            </div>
+        </div>
+        <div class="row invoice-info">
+            <div class="col-xs-4 invoice-col"> From
+                <div><strong>Aspen Enterprises</strong>
+                    <br> 2525 , Hudson Lane , GTB Nagar
+                    <br> Delhi
+                    <br> Phone - 9910114148
+                    <br> Tin No. - 07616990555
+                    <br> GST No. - 07ABCFA3249E1ZT
+                    <br> Accounting Code - 996331
+                </div>
+            </div>
+            <div class="col-xs-4 invoice-col"> To
+                <address>
+                    <strong>{{ request.user.username | title }}</strong><br>
+                    Email: {{ request.user.email }}<br>
+                    Phone: {{ request.user.phone_number }}
+                </address>
+            </div>
+            <div class="col-xs-4 invoice-col"><b></b>
+                <br></div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 table-responsive">
+                <table class="table table-striped" style="margin-bottom:0px;">
+                    <thead>
+                    <tr>
+                        <th style="width:5%;">Qty</th>
+                        <th style="width:25%;">Product</th>
+                        <th style="width:40%;">Addons</th>
+                        <th style="width:10%;">Price</th>
+                        <th style="width:10%;">GST</th>
+                        <th style="width:10%;">Total</th>
+                    </tr>
+                    </thead>
+                </table>
+                <div style="max-height:230px;overflow-y:auto;">
+                    <table class="table">
+                        <tbody> {% for item in items %}
+                            <tr>
+                                <td style="width:5%;">{{ item.quantity }}</td>
+                                <td style="width:25%;">{{ item.item }}({{ item.variation }})</td>
+                                {% if item.extra_add_ons %}
+                                    <td style="width:40%;">{{ item.extra_add_ons }}</td> {% else %}
+                                    <td style="width:40%;">No Addons</td> {% endif %}
+                                <td style="width:10%;">{{ item.line_item_total }}</td>
+                                <td style="width:10%;">{{ item.tax_amount }}</td>
+                                <td style="width:10%;"><i class="fa fa-inr"></i> {{ item.total_item_price | intcomma }}
+                                </td>
+                            </tr> {% endfor %} </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-6">
+                <p class="lead">Payment Methods:</p>
+                <div class="methods">
+                    <button class="payment btn btn-primary btn-lg" data-mode="Cash"><i class="fa fa-money"></i> Cash
+                    </button>
+                    <button class="payment btn btn-primary btn-lg" data-mode="Paytm"><i class="fa fa-money"></i> Paytm
+                    </button>
+                    <button class="payment btn btn-primary btn-lg" data-mode="Card"><i class="fa fa-money"></i>
+                        Credit/Debit Card
+                    </button>
+                </div>
+                <p class="text-muted well well-sm no-shadow" style="margin-top: 10px; display:none;"></p>
+            </div>
+            <div class="col-xs-6">
+                <p class="lead">Amount Due :</p>
+                <div class="table-responsive">
+                    <table class="table">
+                        <tr>
+                            <th style="width:50%">Subtotal:</th>
+                            <td><i class="fa fa-inr"></i> {{ subtotal|intcomma }}</td>
+                        </tr>
+                        <tr>
+                            <th>GST:</th>
+                            <td><i class="fa fa-inr"></i> {{ tax_total|intcomma }}</td>
+                        </tr>
+                        <tr>
+                            <th>Total:</th>
+                            <td><i class="fa fa-inr"></i> {{ total|intcomma }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="lower_box">
+            <div class="row">
+                <div class="col-xs-4 center">
+                    <a href="/feedback" class="btn orange btn-lg"> <i class="fa fa-comment"></i> Feedback
+                    </a>
+                </div>
+                <div class="col-xs-4 center">
+                    <a href="/home" class="btn orange btn-lg"> <i class="fa fa-home"></i>Home </a>
+                </div> {% if request.user.is_authenticated %}
+                <div class="col-xs-4 center pull-right">
+                    <a href="javascript:void(0)" class="btn orange btn-lg" id="logout"> <i class="fa fa-sign-out"></i>Logout
+                    </a>
+                </div> {% endif %} </div>
+            <div class="row">
+                <div class="thanks_note_wrapper">
+                    <div class="thanks_note">This Bill is just for reference , please collect the receipt from the
+                        steward.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="modal fade" id="paytm" tabindex="-1" role="dialog" data-dropback="static">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header center">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h2 class="modal-title black">Paytm.Accepted Here !</h2></div>
+                <div class="modal-body center">
+                    <h4>Scan Paytm code</h4> <img src="qrcode.jpg" style="height:400px;" alt="Qrcode">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="assets/js/login-logout.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#current_date").html(new Date().toLocaleDateString());
+        $(".well").hide();
+        var PaymentModeSelected = false;
+        setTimeout(selectModeRemind, 10000);
+
+        function selectModeRemind() {
+            if (PaymentModeSelected === false) {
+                swal({
+                    title: 'Select Payment Method'
+                    , text: 'Please select your payment method, to proceed with the payment process'
+                    , type: 'success'
+                    , customClass: "cashReminder"
+                    , closeOnConfirm: true
+                });
+            }
+            $(".cashReminder .sa-confirm-button-container").html('<button class="payment confirm btn btn-primary" tabindex="1" data-mode="Cash"><i class="fa fa-money"></i> Cash</button><button class="payment confirm btn btn-primary" tabindex="1" data-mode="Paytm"><i class="fa fa-money"></i> Paytm</button><button class="payment btn btn-primary confirm" data-mode="Card" tabindex="1"><i class="fa fa-money"></i>Credit/Debit Card  </button>');
+            $(".payment").click(function () {
+                $(".cashReminder .sa-confirm-button-container").html('<button class="confirm btn btn-lg btn-primary" tabindex="1" style="display: inline-block;">OK</button>');
+                payMentClick.call(this);
+            });
+        }
+
+        $(".close").click(forwardToFeedback);
+
+        function forwardToFeedback() {
+            setTimeout(swal({
+                title: "Your Feedback Matters !",
+                text: "Please fill the feedback while steward comes with the receipt.",
+                showCancelButton: true,
+                confirmButtonText: "Yes, Fill it!",
+                cancelButtonText: "No !",
+                imageUrl: 'https://lipis.github.io/bootstrap-sweetalert/assets/thumbs-up.jpg',
+                customClass: "feedback-high",
+                closeOnConfirm: false,
+                closeOnCancel: true
+            }, function (isConfirm) {
+                if (isConfirm) {
+                    window.location.href = "/feedback";
+                }
+                else {
+                    window.location.href = "/logout";
+                }
+            }), 5000);
+        }
+
+        $('.payment').click(function () {
+            payMentClick.bind(this)();
+        });
+
+        function payMentClick() {
+            PaymentModeSelected = true;
+            var mode = $(this).data('mode');
+            var wellText = "";
+            switch (mode) {
+                case "Cash":
+                    wellText = 'Thank you for choosing cash method ! <br>Our steward will reach out to you shortly to collect cash. <br>Please keep the cash ready.';
+                    break;
+                case "Paytm":
+                    wellText = 'Thank you for choosing paytm method ! <br>Our steward will reach out to you shortly to confirm transfer. <br>Please transfer the amount.';
+                    break;
+                case "Card":
+                    wellText = "Thank you for choosing Credit/Debit card method ! <br>Our steward will reach out to you shortly with card reader machine.";
+                    break;
+            }
+
+            if (mode != "Paytm") {
+                swal({
+                    title: "Payment Through " + mode + " ?",
+                    type: "info",
+                    showCancelButton: true,
+                    closeOnConfirm: false,
+                    showLoaderOnConfirm: true
+                }, function (isConfirm) {
+                    if (!isConfirm) {
+                        return
+                    }
+                    $.ajax({
+                        url: "/notification/payment/",
+                        type: "POST",
+                        data: {
+                            csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
+                            mode: mode
+                        },
+                        success: function () {
+                            $(".well").html(wellText);
+                            $(".well").show();
+                            setTimeout(forwardToFeedback, 1000);
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            $(".well").hide();
+                            swal("Error in Payment!", "Please try again", "error");
+                        }
+                    });
+                });
+            }
+            else {
+                swal({
+                    title: "Payment Through " + mode + " ?",
+                    type: "info",
+                    showCancelButton: true,
+                    closeOnConfirm: true
+                }, function (isConfirm) {
+                    if (!isConfirm) {
+                        return
+                    }
+                    $.ajax({
+                        url: "/notification/payment/",
+                        type: "POST",
+                        data: {
+                            csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
+                            mode: mode
+                        },
+                        success: function () {
+                            $(".well").html(wellText);
+                            $(".well").show();
+                            setTimeout($("#paytm").modal(), 1000);
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            $(".well").hide();
+                            swal("Error in Payment!", "Please try again", "error");
+                        }
+                    });
+                });
+            }
+        }
+    });
+    $(document).ready(function () {
+        Offline.options = {
+            checkOnLoad: false
+            , interceptRequests: true
+            , reconnect: {
+                initialDelay: 3
+            }
+            , requests: true
+            , game: false
+        };
+        Offline.options = {
+            checks: {
+                xhr: {
+                    url: '/internet-check/'
+                }
+            }
+        };
+        setInterval(function () {
+            if (Offline.state === 'up') Offline.check();
+        }, 5000);
+    });
+</script>
+</body>
+</html>

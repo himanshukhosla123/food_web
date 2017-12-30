@@ -1,0 +1,260 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ products.0.default | title }} | FoodCham{% endblock %}
+
+{% block body-content %}
+    <section class="content-header" style="margin-top: 50px;">
+        <div>
+            <div class="widget-box">
+                <h2 style="color: black; background-color:rgba(0,0,0,0.1);padding: 10px; " align="center"><b>
+                    {{ products.0.default }}</b></h2>
+
+                <div class="widget-body">
+                    <div class="widget-main">
+                        <div class="container-fluid">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    {% for product in products %}
+                                        {% if product.recommend %}
+
+                                            <div class="col-md-4 menu_card">
+                                                <div class="recommended">Recommended</div>
+                                                <div class=" col-md-12 product_img">
+                                                    <!-- product image name and price made links -->
+
+                                                    <a href="{{ product.get_absolute_url }}">
+                                                        <!-- actual product image -->
+                                                        {% if not product.get_image_url %}
+
+                                                            <img src="{% static 'assets/img/nullimage.jpg' %}"
+                                                                 width="407"
+                                                                 height="282">
+
+                                                        {% else %}
+
+                                                            <img src="{{ product.get_image_url }}" width="407"
+                                                                 height="282">
+
+                                                        {% endif %}
+
+                                                        <p class="product_head_price"><span
+                                                                class="product_name">{{ product.title }}</span>
+                                                            <span class="product_price">&#x20b9;{{ product.variation_set.first.get_price }}</span>
+                                                        </p>
+                                                    </a>
+
+                                                </div>
+                                                <div class="row product-data">
+                                                    <div class="col-md-9">
+                                                        <h4 class="title h4" style="color:#262626;
+                                        font-size:1.3em; font-family:sans-serif; font-weight:100; padding-left:5px;text-align:justify;width:100%; height:auto;">
+
+                                                            {% if product.veg == 'yes' %}
+                                                                <span class="veg-non-veg feature-list"><i><img
+                                                                        src="{% static 'assets/img/veg_icon-01.png' %}"></i></span>
+                                                            {% else %}
+                                                                <span class="veg-non-veg feature-list"><i><img
+                                                                        src="{% static 'assets/img/nonveg-01.png' %}"></i></span>
+                                                            {% endif %}
+
+                                                            {% if product.spicy == 'normal' %}
+
+                                                            {% elif product.spicy == 'less' %}
+                                                                <span class="spicy feature-list"><img
+                                                                        src="{% static 'assets/img/chilly-01.png' %}"></span>
+                                                            {% elif product.spicy == 'very' %}
+                                                                <span class="spicy feature-list"><img
+                                                                        src="{% static 'assets/img/chilly2-01.png' %}"></span>
+                                                            {% endif %}
+
+                                                            <span class="product_rating feature-list">{{ product.rating |floatformat:"1" }} <span
+                                                                    class="fa fa-star"></span></span>
+
+                                                            {% if not request.user.is_authenticated %}
+                                                                <span class="titanic titanic-heart feature-list"
+                                                                      data-toggle="modal"
+                                                                      data-target="#login-modal"></span>
+                                                            {% else %}
+                                                                <span class="titanic titanic-heart feature-list"
+                                                                      id="{{ product.id }}"></span>
+                                                            {% endif %}
+
+                                                        </h4>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <a href="{{ product.get_absolute_url }}"
+                                                           class="btn btn-default more_button">ADD</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    {% for product in products %}
+                                        {% if product.new and not product.recommend %}
+                                            <div class="col-md-4 menu_card">
+                                                <div class="new">New</div>
+                                                <div class=" col-md-12 product_img">
+                                                    <!-- product image name and price made links -->
+                                                    <a href="{{ product.get_absolute_url }}">
+                                                        <!-- actual product image -->
+                                                        {% if product.get_image_url %}
+                                                            <img src="{{ product.get_image_url }}" width="407"
+                                                                 height="282">
+                                                        {% endif %}
+                                                        <!-- product name -->
+                                                        <p class="product_head_price"><span
+                                                                class="product_name">{{ product.title }}</span>
+                                                            <!-- product price -->
+                                                            <span class="product_price">&#x20b9;{{ product.variation_set.first.get_price }}</span>
+                                                        </p>
+                                                    </a>
+                                                    <!-- links neds-->
+                                                </div>
+                                                <div class="row product-data">
+                                                    <div class="col-md-9">
+                                                        <h4 class="title h4" style="color:#262626;
+                                            font-size:1.3em; font-family:sans-serif; font-weight:100; padding-left:5px;text-align:justify;width:100%; height:auto;">
+                                                            <!-- indication for veg or non-veg ('veg' is shown in this product card, for 'non-veg' have a look at next product card) -->
+
+                                                            {% if product.veg == 'yes' %}
+                                                                <span class="veg-non-veg feature-list"><i><img
+                                                                        src="{% static 'assets/img/veg_icon-01.png' %}"></i></span>
+
+                                                            {% else %}
+
+                                                                <span class="veg-non-veg feature-list"><i><img
+                                                                        src="{% static 'assets/img/nonveg-01.png' %}"></i></span>
+
+
+                                                            {% endif %}
+                                                            <!-- indication for spicy, very spicy or non-spicy, spicy shown here, very-spicy and non-spicy indication shown in successive cards -->
+                                                            {% if product.spicy == 'normal' %}
+
+
+                                                            {% elif product.spicy == 'less' %}
+                                                                <span class="spicy feature-list"><img
+                                                                        src="{% static 'assets/img/chilly-01.png' %}"></span>
+
+
+                                                            {% elif product.spicy == 'very' %}
+
+                                                                <span class="spicy feature-list"><img
+                                                                        src="{% static 'assets/img/chilly2-01.png' %}"></span>
+
+                                                            {% endif %}
+                                                            <!-- sta reating for each product -->
+                                                            <span class="product_rating feature-list">{{ product.rating |floatformat:"1" }} <span
+                                                                    class="fa fa-star"></span></span>
+                                                            <!-- button for adding product to wishlist, also trigger for snackbar that says 'product added to your wishlist' when added or 'product removed from your woshlist' when removed  (actual snackbar at the botttom of the page)-->
+                                                            {% if not request.user.is_authenticated %}
+                                                                <span class="titanic titanic-heart feature-list"
+                                                                      data-toggle="modal"
+                                                                      data-target="#login-modal"></span>
+                                                            {% else %}
+                                                                <span class="titanic titanic-heart feature-list"
+                                                                      id="{{ product.id }}"></span>
+                                                            {% endif %}
+
+                                                        </h4>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <!-- add button, takes user to 'add-to-cart' page -->
+                                                        <a href="{{ product.get_absolute_url }}"
+                                                           class="btn btn-default more_button">ADD</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    {% for product in products %}
+                                        {% if not product.new and not product.recommend %}
+                                            <div class="col-md-4 menu_card">
+                                                <div class=" col-md-12 product_img">
+                                                    <!-- product image name and price made links -->
+                                                    <a href="{{ product.get_absolute_url }}">
+                                                        <!-- actual product image -->
+                                                        {% if product.get_image_url %}
+                                                            <img src="{{ product.get_image_url }}" width="407"
+                                                                 height="282">
+                                                        {% endif %}
+                                                        <!-- product name -->
+                                                        <p class="product_head_price"><span
+                                                                class="product_name">{{ product.title }}</span>
+                                                            <!-- product price -->
+                                                            <span class="product_price">&#x20b9;{{ product.variation_set.first.get_price }}</span>
+                                                        </p>
+                                                    </a>
+                                                    <!-- links neds-->
+                                                </div>
+                                                <div class="row product-data">
+                                                    <div class="col-md-9">
+                                                        <h4 class="title h4" style="color:#262626;
+                                        font-size:1.3em; font-family:sans-serif; font-weight:100; padding-left:5px;text-align:justify;width:100%; height:auto;">
+                                                            <!-- indication for veg or non-veg ('veg' is shown in this product card, for 'non-veg' have a look at next product card) -->
+
+                                                            {% if product.veg == 'yes' %}
+                                                                <span class="veg-non-veg feature-list"><i><img
+                                                                        src="{% static 'assets/img/veg_icon-01.png' %}"></i></span>
+
+                                                            {% else %}
+
+                                                                <span class="veg-non-veg feature-list"><i><img
+                                                                        src="{% static 'assets/img/nonveg-01.png' %}"></i></span>
+
+
+                                                            {% endif %}
+                                                            <!-- indication for spicy, very spicy or non-spicy, spicy shown here, very-spicy and non-spicy indication shown in successive cards -->
+                                                            {% if product.spicy == 'normal' %}
+
+
+                                                            {% elif product.spicy == 'less' %}
+                                                                <span class="spicy feature-list"><img
+                                                                        src="{% static 'assets/img/chilly-01.png' %}"></span>
+
+
+                                                            {% elif product.spicy == 'very' %}
+
+                                                                <span class="spicy feature-list"><img
+                                                                        src="{% static 'assets/img/chilly2-01.png' %}"></span>
+
+                                                            {% endif %}
+                                                            <!-- sta reating for each product -->
+                                                            <span class="product_rating feature-list">{{ product.rating |floatformat:"1" }} <span
+                                                                    class="fa fa-star"></span></span>
+                                                            <!-- button for adding product to wishlist, also trigger for snackbar that says 'product added to your wishlist' when added or 'product removed from your woshlist' when removed  (actual snackbar at the botttom of the page)-->
+                                                            {% if not request.user.is_authenticated %}
+                                                                <span class="titanic titanic-heart feature-list"
+                                                                      data-toggle="modal"
+                                                                      data-target="#login-modal"></span>
+                                                            {% else %}
+                                                                <span class="titanic titanic-heart feature-list"
+                                                                      id="{{ product.id }}"></span>
+                                                            {% endif %}
+
+                                                        </h4>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <!-- add button, takes user to 'add-to-cart' page -->
+                                                        <a href="{{ product.get_absolute_url }}"
+                                                           class="btn btn-default more_button">ADD</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+
+<span class="veg-non-veg feature-list"><i><img src="{% static 'assets/img/nonveg-01.png' %}"></i></span>
+<span class="spicy feature-list"><img src="{% static 'assets/img/chilly2-01.png' %}"></span>

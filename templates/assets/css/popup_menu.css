@@ -1,0 +1,26 @@
+*{margin:0;padding:0;}
+.pop_background{height:100%;width:100%;position:fixed;background:black;position:fixed;left:0;top:0%;opacity:0.8;z-index:1000;margin-left:0;padding:0;}
+.pop_content{height:50%;width:50%;background-color:#fff;position:fixed;top:30%;left:30%;z-index:1001;}
+.pop_content img{height:60%;width:40%;position:absolute;left:0%;top:0%;}
+.recomm_list li{cursor:pointer;}
+.pop_content h1{position:absolute;left:48%;top:0%;font-size:25px;color:#000;}
+.rating_star{color:black;position:absolute;left:43%;top:15%;height:20px;line-height:20px;padding-right:8px;border-right:1px solid grey;color:skyblue;}
+.reviews, .write_reviews{position:absolute;left:61%;top:15%;height:20px;line-height:20px;padding-left:8px;color:#808080;font-size:12px;border-right:1px solid grey;padding-right:8px;}
+.write_reviews{padding-left:8px;left:76%;}
+.pop_content_ingre{color:black;position:absolute;margin:10px 0 0 0;left:43%;top:20%;padding-left:15px;max-width:60%;line-height:30px;}
+.pop_price{color:black;font-size:36px;position:absolute;left:40%;padding-left:10%;top:40%;}
+.quantity{background-color:#444;color:#C4BE92;text-align:center;-webkit-border-radius:9px;border-radius:9px;-moz-background-clip:padding;-webkit-background-clip:padding-box;background-clip:padding-box;padding:0em .5em 0 .5em;width:5em;height:4.5em;margin:0 auto;-webkit-box-shadow:0px 0px 12px 0px #000;box-shadow:0px 0px 12px 0px #000;position:absolute;top:65%;left:3%;}
+#qty{font-size:2.0em;background-color:transparent;text-align:center;border-width:0;padding-top:0;width:100%;margin:0 0 0 0;color:#fff;height:30px;line-height:30px;}
+label{display:block;font-size:.5em;height:30px;line-height:30px;margin:0;}
+#plus, #minus{width:35%;height:30px;line-height:30px;color:#444;background-color:#B5B198;-webkit-border-radius:6px;border-radius:6px;-moz-background-clip:padding;-webkit-background-clip:padding-box;background-clip:padding-box;font-weight:bold;}
+.cart_button{position:absolute;left:21%;top:70%;width:18%;text-align:center;padding-left:1%;}
+.pop_description{max-width:60%;color:black;position:absolute;top:65%;left:43%;line-height:30px;margin:0;}
+.popup{display:none;}
+.btn-primary{padding:1%;}
+.cross_sign{float:right;transform:scale(1.5);cursor:pointer;padding-top:1%;}
+.slide_in{transform:translateY(150px) scale(0.96);opacity:0;animation:slide-in 1.5s ease forwards;}
+.already-visible{transform:translateY(0) scale(0.96);animation:none;opacity:1;}
+.slide_in:nth-child(even){animation-duration:1.2s;}
+@keyframes slide-in{to{transform:translateY(0) scale(0.96);opacity:1;}
+}
+.logout-bttn{color:#fff;padding-top:3px;}

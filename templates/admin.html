@@ -1,0 +1,717 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>Cashier Panel | FoodCham</title>
+    <link rel="shortcut icon" type="image/png" href="assets/ico/favicon.png"/>
+
+    {# Css #}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/admin.css">
+    <link rel="stylesheet" href="assets/css/AdminLTE.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css" rel="stylesheet">
+    <link href="plugins/offline/offline-theme-dark.css" rel="stylesheet">
+    <link href="plugins/offline/offline-language-english.css" rel="stylesheet">
+
+    {# JS #}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/humanize-plus/1.8.2/humanize.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://momentjs.com/downloads/moment-timezone-with-data-2012-2022.js"></script>
+    <style>
+        * {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .order_container .table {
+            margin-bottom: 0;
+        }
+
+        .order_container .table .well {
+            background-color: #ccc;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        .order_container .table tr {
+            background-color: #f9f9f9;
+        }
+
+        .order_container .well td a {
+            min-width: 100px;
+            padding: 5px 10px;
+        }
+
+        .tab-content {
+            background-color: #EDEDED;
+            overflow: auto;
+        }
+
+        .cart-header, .cart-item, .order-options, .cart-text {
+            border-left-width: 10px;
+            border-right-width: 10px;
+            border-style: solid;
+            border-color: #CCCCCC;
+            border-top-width: 0;
+            border-bottom-width: 0;
+        }
+
+        .cart-header {
+            border-top-width: 8px;
+        }
+
+        .order-options {
+            border-bottom-width: 8px;
+        }
+
+        .toggle-order {
+            border-bottom: 2px solid #ffffff;
+        }
+
+        .order-header {
+            cursor: pointer;
+        }
+
+        .alert-minimalist {
+            background-color: green;
+            border-color: rgba(149, 149, 149, 0.3);
+            border-radius: 3px;
+            color: rgb(149, 149, 149);
+            padding: 10px;
+        }
+
+        .alert-minimalist > [data-notify="icon"] {
+            height: 50px;
+            margin-right: 12px;
+        }
+
+        .alert-minimalist > [data-notify="title"] {
+            color: White;
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .alert-minimalist > [data-notify="message"] {
+            font-size: 80%;
+            color: White;
+        }
+
+        .notify {
+            margin-top: 10px;
+            float: left;
+            width: 20%;
+            padding: 0px 10px;
+        }
+
+        .notify .not_container {
+            background: #eee;
+            padding: 10px 5px;
+            overflow: auto;
+            border: 1px solid #ccc;
+        }
+
+        .notification {
+            min-height: 80px !important;
+            background: white;
+            border-radius: 2px;
+            padding: 5px;
+            box-shadow: 2px 2px 10px 0 #ccc;
+            margin-bottom: 15px;
+        }
+
+        .viewed {
+            background-color: #ccc;
+        }
+
+        .new {
+            background-color: peachpuff;
+            color: black;
+        }
+
+        .not_icon, .not_icon img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .not_icon {
+            margin-right: 10px;
+            margin-bottom: 5px;
+            float: left;
+        }
+
+        .not_desc h5 {
+            margin: 5px 0;
+            font-weight: bolder;
+        }
+
+        .not_desc p {
+            margin-bottom: 0;
+        }
+
+        .time {
+            text-align: center;
+            font-weight: 600;
+            width: 70px;
+        }
+    </style>
+    <script>
+
+        moment.tz.setDefault("Asia/Kolkata");
+
+        function ucFirstAllWords(str) {
+            var pieces = str.split(" ");
+            for (var i = 0; i < pieces.length; i++) {
+                var j = pieces[i].charAt(0).toUpperCase();
+                pieces[i] = j + pieces[i].substr(1).toLowerCase();
+            }
+            return pieces.join(" ");
+        }
+
+        String.prototype.format = function () {
+            var formatted = this;
+            for (var i = 0; i < arguments.length; i++) {
+                var regexp = new RegExp('\\{' + i + '\\}', 'gi');
+                formatted = formatted.replace(regexp, arguments[i]);
+            }
+            return formatted;
+        };
+
+        order_header = '<tr class="order-header order-header-{0} toggle-order" data-order="{0}"><td >{0}</td><td>{1}</td><td>{2}</td><td >{3}</td><td >{4}</td></tr>';
+        order_header_with_kot = '<tr class="order-header order-header-{0} toggle-order" data-order="{0}" style="background-color:rgb(236, 151, 31);"><td >{0}</td><td>{1}</td><td>{2}</td><td >{3}</td><td >{4}</td></tr>';
+        cart_header = '<tr class="cart-header order-parent-{0}"  style="display:none"><th colspan="2">Product</th><th>Quantity</th><th>Add-Ons</th><th>Price</th></tr>';
+        cart_item = '<tr class="cart-item order-parent-{0}"  style="display:none"><td  colspan="2">{1}</td><td>{2}</td><td>{3}</td><td><i class="fa fa-inr" aria-hidden="true"></i> {4}</td></tr>';
+        order_options = '<tr class="order-options order-parent-{0}" style="display:none" >' +
+            '<td><a href="javascript:void(0)" class="btn order-btn btn-warning" id="order-kot-{0}" onclick="order_status(this.id,this.name)" data-order-id="{0}" name="kot">KOT</a></td>' +
+            '<td></td>' +
+            '<td></td>' +
+            '<td></td><td></td></tr><tr></tr>';
+        cookingInstruction = "<tr class='cart-text order-parent-{0} text-center' style='display:none;'><td colspan='5'><b>{1}</b></td></tr>";
+
+        function resetOrderItems() {
+            $('.order-header').remove();
+            $('.cart-header').remove();
+            $('.cart-item').remove();
+            $('.order-options').remove();
+            $('.cart-text').remove();
+
+            $("#total-payable").text("0.00");
+            $("#tax").text('0.00');
+            $("#total").text('0');
+            $("#table-no").text("Table No: ");
+            $("#count").text('');
+        }
+
+        function tablebuttonclick(cart_id, table_id) {
+            var table_num = table_id.split('-');
+            table_num = table_num[table_num.length - 1];
+
+            if (cart_id === 'vacant') {
+                resetOrderItems();
+            } else {
+                resetOrderItems();
+
+                $.ajax({
+                    type: "POST",
+                    url: '/cashier/order/',
+                    data: {
+                        table: table_num,
+                        csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val()
+                    },
+                    success: function (data) {
+                        var tax = 0,
+                            total_payable = 0,
+                            total = 0,
+                            count = 0;
+
+
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i]["kot-status"]) {
+                                $('#item-table').append(order_header_with_kot.format(data[i].id, ucFirstAllWords(data[i].username), moment(data[i].timestamp).format('h:mm a'), data[i].items.length, data[i].total));
+                            } else {
+                                $('#item-table').append(order_header.format(data[i].id, ucFirstAllWords(data[i].username), moment(data[i].timestamp).format('h:mm a'), data[i].items.length, data[i].total));
+                            }
+
+                            $('#item-table').append(cart_header.format(data[i].id));
+
+                            var items = data[i].items;
+
+                            count += parseInt(items.length);
+                            total_payable += parseFloat(data[i].total);
+
+
+                            for (var j = 0; j < items.length; j++) {
+                                total += parseFloat(items[j].line_item_total);
+                                tax += parseFloat(items[j].tax_amount);
+                                $('#item-table').append(cart_item.format(data[i].id, items[j].item + "(" + items[j].variation + ")", items[j].quantity, items[j].extra_add_ons, items[j].line_item_total));
+                            }
+
+                            if (data[i].extra_comments != '') {
+                                $('#item-table').append(cookingInstruction.format(data[i].id, data[i].extra_comments));
+                            }
+
+                            $('#item-table').append(order_options.format(data[i].id));
+
+                        }
+
+                        $('.toggle-order').click(function () {
+                            var order_id = $(this).data('order');
+                            $('.order-parent-' + order_id).toggle();
+                        });
+
+                        document.getElementById('total-payable').innerHTML = '<i class="fa fa-inr" aria-hidden="true"></i> ' + Humanize.intComma(total_payable);
+                        document.getElementById('tax').innerHTML = '<i class="fa fa-inr" aria-hidden="true"></i> ' + Math.round(tax * 100) / 100;
+                        document.getElementById('total').innerHTML = '<i class="fa fa-inr" aria-hidden="true"></i> ' + total;
+                        $("#count").text(count);
+                        $("#table-no").text("Table No: " + table_num);
+                    }
+                })
+            }
+        }
+
+        $(document).ready(function () {
+            var temp = $(window).height();
+            $(".tab-content").css("height", temp - 150 + "px");
+            $(".order_area").css("height", temp - 158 + "px");
+            $(".order_content").css("height", temp - 158 + "px");
+            $(".not_container").css("height", $(window).height() - 20 + "px");
+        });
+
+        function order_status(id, status) {
+            var order_id = $('#' + id).data('order-id'),
+                title,
+                data = {
+                    csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
+                    order_id: order_id
+                };
+
+            if (status === 'kot') {
+                title = 'Generate Kot of Order ' + order_id;
+                data['kot'] = true
+            } else {
+                if (status === "served") {
+                    title = 'Order Served ?';
+                } else {
+                    title = 'Payment Done ?';
+                }
+
+                data['status'] = status
+            }
+
+
+            swal({
+                title: title,
+                type: "info",
+                showCancelButton: true,
+                closeOnConfirm: true
+            }, function (isConfirm) {
+                if (!isConfirm) return;
+                $.ajax({
+                    url: "/cashier/order/single/",
+                    type: "POST",
+                    dataType: 'json',
+                    data: data,
+                    success: function () {
+                        swal({
+                            title: "Successfully!",
+                            timer: 1000,
+                            showConfirmButton: false
+                        });
+                        if (status === 'kot') {
+                            $('.order-header-' + order_id).css('background-color', 'rgb(236, 151, 31)');
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        console.log(xhr);
+                        swal("Error in Serving!", "Please try again", "error");
+                    }
+                });
+            });
+        }
+    </script>
+
+    {# Push notification #}
+    <script>
+        (function (p, u, s, h) {
+            p._pcq = p._pcq || [];
+            p._pcq.push(['_currentTime', Date.now()]);
+            s = u.createElement('script');
+            s.type = 'text/javascript';
+            s.async = true;
+            s.src = 'https://cdn.pushcrew.com/js/01523d594d4dba2ae3de251f00ff03e2.js';
+            h = u.getElementsByTagName('script')[0];
+            h.parentNode.insertBefore(s, h);
+        })(window, document);
+    </script>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="tabel_manager">
+            <div class="row">
+                <div class="col-xs-12">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active">
+                            <a href="#active" aria-controls="active" role="tab" data-toggle="tab">Tables</a>
+                        </li>
+                        <li role="presentation" class="pull-right" style="margin-left: 0!important;">
+                            <a href="/cashier-logout" class="btn btn-primary"
+                               style="max-height: 58px!important;">Logout</a>
+                        </li>
+                    </ul>
+
+                    <div id="test"></div>
+                    <div class="tab-content scroll_style">
+                        <div role="tabpanel" class="tab-pane active" id="active">
+                            <div class="all_tables coremove2">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row decision-btns">
+                <div class="col-md-4">
+                    <button class="btn btn-danger" id="reset">Reset</button>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-info" id="served">Order Served</button>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-success" id="payment">Payment Done</button>
+                </div>
+            </div>
+        </div>
+        <div class="order_container">
+            <div class="row order_area">
+                <div class="order_content scroll_style">
+                    <table class="table scroll_style" id='item-table'>
+                        <tr>
+                            <th id='table-no' class="text-center" colspan="5">Table No:</th>
+                        </tr>
+                        <tr>
+                            <th>Order Id</th>
+                            <th>Name</th>
+                            <th>Time</th>
+                            <th>Items</th>
+                            <th>Price</th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="row bill">
+                <div>
+                    <table class="table">
+                        <tr>
+                            <th>Count</th>
+                            <td id='count'></td>
+                            <th>Total</th>
+                            <td id='total'>0</td>
+                        </tr>
+                        <tr>
+                            <th>Discount</th>
+                            <td id='diccount'>0.00</td>
+                            <th>Tax</th>
+                            <td id='tax'>0.00</td>
+                        </tr>
+                        <tr style="font-size: 1.4em">
+                            <th>Total payable</th>
+                            <td id='total-payable'><b>0.00</b></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="notify">
+            <div class="not_container">
+                {% for notification in notifications %}
+                    {% if notification.type == 'order' %}
+                        <div class="notification viewed">
+                            <div class="not_icon">
+                                <img src="icons/order.png"
+                                     class="responsive img-circle" alt="">
+                                <div class="time"
+                                     id="notification-{{ forloop.counter0 }}"></div>
+                            </div>
+                            <div class="not_desc">
+                                <h5>{{ notification.title }}</h5>
+                                <p>{{ notification.message }}</p>
+                            </div>
+                        </div>
+                    {% elif notification.type == 'need-help' %}
+                        <div class="notification viewed">
+                            <div class="not_icon">
+                                <img src="icons/alert.png"
+                                     class="responsive img-circle" alt="">
+                                <div class="time" id="notification-{{ forloop.counter0 }}"></div>
+                            </div>
+                            <div class="not_desc">
+                                <h5>{{ notification.title }}</h5>
+                                <p>{{ notification.message }}</p>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="notification viewed">
+                            <div class="not_icon">
+                                {% if notification.message == 'Mode : Paytm' %}
+                                    <img src="icons/paytm.png"
+                                         class="responsive img-circle" alt="">
+                                {% elif notification.message == 'Mode : Card' %}
+                                    <img src="icons/card.png"
+                                         class="responsive img-circle" alt="">
+                                {% else %}
+                                    <img src="icons/cash.png"
+                                         class="responsive img-circle" alt="">
+                                {% endif %}
+                                <div class="time" id="notification-{{ forloop.counter0 }}"></div>
+                            </div>
+                            <div class="not_desc">
+                                <h5>{{ notification.title }}</h5>
+                                <p>{{ notification.message }}</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+    {% csrf_token %}
+</div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/offline-js/0.7.19/offline.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mouse0270-bootstrap-notify/3.1.7/bootstrap-notify.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+<script src="plugins/nicescroll/jquery.nicescroll.min.js"></script>
+<script src="chat.js"></script>
+<script>
+    var time = new Date().getTime();
+    $(document.body).bind("mousemove keypress", function (e) {
+        time = new Date().getTime();
+    });
+
+    function refresh() {
+        if (new Date().getTime() - time >= 300000)
+            window.location.reload(true);
+        else
+            setTimeout(refresh, 100000);
+    }
+
+    setTimeout(refresh, 100000);
+
+    $(document).ready(function () {
+        function get_table_html(number) {
+            return "<button type='button' onClick='tablebuttonclick(this.name, this.id)' " +
+                "class='btn btn-default' style='background-color:#666 !important' name='vacant' id='all-table-"
+                + number + "'>" + number + "</button>";
+        }
+
+        var tables_count = {{ total_table }};
+        var tables = {{ tables | safe }};
+
+        for (var i = 0; i < tables_count; ++i) {
+            $('.tab-content .all_tables').append(get_table_html(tables[i].fields.table_no));
+        }
+
+        var active_tables = {{ active_serialized | safe }};
+        var pending_tables = {{ pending_serialized | safe }};
+
+        for (i = 1; i <= active_tables.length; i++) {
+            var active = $('#all-table-' + active_tables[i - 1].fields.table);
+            active.attr('name', active_tables[i - 1].fields.cart);
+            active.attr('data-order-id', active_tables[i - 1].pk);
+            active.css('background-color', 'yellow');
+        }
+
+        for (i = 1; i <= pending_tables.length; i++) {
+            var pending = $('#all-table-' + pending_tables[i - 1].fields.table);
+            pending.attr('name', pending_tables[i - 1].fields.cart);
+            pending.attr('data-order-id', pending_tables[i - 1].pk);
+            pending.css('background-color', '#31B0D5');
+        }
+
+
+        $('#reset').click(function () {
+            var reset_table_number = ($('#table-no').text()).substr(10);
+
+            if (reset_table_number) {
+                swal({
+                    title: "Reset  Table " + reset_table_number + " ?",
+                    type: "info",
+                    showCancelButton: true,
+                    closeOnConfirm: true
+                }, function (isConfirm) {
+                    if (!isConfirm) return;
+                    $.ajax({
+                        url: "/cashier/table/reset/",
+                        type: "POST",
+                        dataType: 'json',
+                        data: {
+                            csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
+                            table_number: reset_table_number
+                        },
+                        success: function () {
+                            swal({
+                                title: "Deleted Successfully!",
+                                timer: 1000,
+                                showConfirmButton: false
+                            });
+                            $('#all-table-' + reset_table_number).css('background-color', '#666666');
+                            $('#all-table-' + reset_table_number).attr('name', '');
+                            $('#all-table-' + reset_table_number).attr('data-order-id', '');
+                            resetOrderItems();
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            console.log(xhr);
+                            swal("Error in deleting!", "Please try again", "error");
+                        }
+                    });
+                });
+            }
+            else {
+                swal("Don't Fool Me", "Every One does mistakes!");
+            }
+        });
+
+        $('#served').click(function () {
+            var served_table_number = ($('#table-no').text()).substr(10);
+
+            if (served_table_number) {
+                swal({
+                    title: "All Orders Served at Table " + served_table_number + " ?",
+                    type: "info",
+                    showCancelButton: true,
+                    closeOnConfirm: true
+                }, function (isConfirm) {
+                    if (!isConfirm) return;
+                    $.ajax({
+                        url: "/cashier/order/all/",
+                        type: "POST",
+                        dataType: 'json',
+                        data: {
+                            csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
+                            status: "pending",
+                            table_number: served_table_number
+                        },
+                        success: function () {
+                            swal({
+                                title: "Served Successfully!",
+                                timer: 1000,
+                                showConfirmButton: false
+                            });
+                            $('#all-table-' + served_table_number).css('background-color', '#31B0D5');
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            console.log(xhr);
+                            swal("Error in Serving!", "Please try again", "error");
+                        }
+                    });
+                });
+            }
+            else {
+                swal("Don't Fool Me", "Every One does mistakes!");
+            }
+        });
+
+        $('#payment').click(function () {
+            var payment_table_number = ($('#table-no').text()).substr(10);
+
+            if (payment_table_number) {
+                swal({
+                    title: "Payment at Table " + payment_table_number + " ?",
+                    type: "info",
+                    showCancelButton: true,
+                    closeOnConfirm: true
+                }, function (isConfirm) {
+                    if (!isConfirm) return;
+                    $.ajax({
+                        url: "/cashier/order/all/",
+                        type: "POST",
+                        dataType: 'json',
+                        data: {
+                            csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
+                            status: "completed",
+                            table_number: payment_table_number
+                        },
+                        success: function () {
+                            swal({
+                                title: "Payment Successfully!",
+                                timer: 1000,
+                                showConfirmButton: false
+                            });
+                            $('#all-table-' + payment_table_number).css('background-color', '#449D44');
+                            $('#all-table-' + payment_table_number).attr('name', '');
+                            $('#all-table-' + payment_table_number).attr('data-order-id', '');
+                            setTimeout(function () {
+                                $('#all-table-' + payment_table_number).css('background-color', '#666666');
+                            }, 2000);
+                            resetOrderItems();
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            console.log(xhr);
+                            swal("Error in Payment!", "Please try again", "error");
+                        }
+                    });
+                });
+            }
+            else {
+                swal("Don't Fool Me", "Every One does mistakes!");
+            }
+        });
+
+
+        Offline.options = {
+            checkOnLoad: false,
+            interceptRequests: true,
+            reconnect: {
+                initialDelay: 3
+            },
+            requests: true,
+            game: false
+        };
+        Offline.options = {
+            checks: {
+                xhr: {
+                    url: '/internet-check/'
+                }
+            }
+        };
+
+        setInterval(function () {
+            if (Offline.state === 'up')
+                Offline.check();
+        }, 5000);
+
+        {% if table_number %}
+            $('#all-table-{{ table_number }}').trigger('click');
+            setTimeout(function () {
+                $('.toggle-order').last().trigger('click');
+            }, 2000);
+            history.pushState({}, null, window.location.origin + window.location.pathname);
+        {% endif %}
+
+        var notifications = {{ notifications_serialized | safe }};
+
+        for (i = 0; i < notifications.length; i++) {
+            $('#notification-' + i).text(moment(notifications[i].fields.timestamp).format('h:mm a'));
+        }
+
+        $('.not_container').niceScroll({
+            cursorcolor: "#F16725",
+            horizrailenabled: false
+        });
+    });
+</script>
+</html>

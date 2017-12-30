@@ -1,0 +1,24 @@
+body{}
+hr{margin:10px 0px;}
+.smilie{padding-top:20px;font-size:100px;color:white;padding-bottom:20px;margin-bottom:20px;}
+.smilie .fa{color:#00B9F5;background-color:white;height:100px;width:100px;border-radius:200px;}
+.smilie{background-color:rgb(255,102,0);}
+.shadow::after{content:"";background-color:rgba(0,0,0,0.8);height:15px;width:90px;display:block;margin:0px auto;border-radius:50%;}
+.blue{color:#337ab7;}
+#order_no{color:black;}
+.box{margin:20px 0px;border-radius:5px;box-shadow:-2px -2px 5px 1px rgba(0,0,0,0.2);border:1px solid black;background-color:white;}
+.table tr td,.button a{font-size:14px;}
+.table tr td:last-child,.table tr th:last-child{text-align:right;}
+.button a{min-width:150px;font-size:16px;border-radius:30px;}
+.box table tbody{max-height:230px;overflow-y:scroll;}
+.box .badge{color:white;border-radius:8px;}
+.center{text-align:center;}
+#carousel-example-generic{margin:10px 0px;}
+.bg-blue{background-color:#337ab7;}
+#carousel-example-generic .item{text-align:center;}
+#carousel-example-generic .item img{height:250px;width:100%;display:inline-block;}
+#carousel-example-generic .carousel-control{background-image:none;}
+.carousel-indicators li{width:20px;height:5px;margin:1px;background-color:rgba(0,0,0,0.65);border-radius:2px 2px 1px 1px;border:none;}
+.carousel-indicators li.active{background-color:orange;width:20px;height:5px;margin:1px;}
+.status{padding:5px 10px;margin:auto;margin-bottom:10px;background-color:rgb(255,102,0);margin:0 20px 10px;color:white;}
+.button{margin-bottom:10px;}

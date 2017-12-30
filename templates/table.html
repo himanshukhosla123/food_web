@@ -1,0 +1,67 @@
+<!DOCTYPE html><title>FoodCham | Table</title><meta content="width=device-width,initial-scale=1"name=viewport><link href=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css rel=stylesheet><link href="{% static 'plugins/offline/offline-theme-dark.css' %}"rel=stylesheet><link href="{% static 'plugins/offline/offline-language-english.css' %}"rel=stylesheet><style>.table_area{text-align:center;margin:1%}*{-moz-user-select:none;-webkit-user-select:none;user-select:none}input[type=checkbox]{visibility:hidden}.tables label{height:50px;width:50px;cursor:pointer;background-color:#999;border:2px solid #666;line-height:44px;margin:3% 0 5% 0}.tables label:after,.tables label:before{content:'';position:relative}.tables label:after{border-left-width:0;padding:15px 3px 16px 3px;left:13px}.tables label:before{padding:15px 3px 16px 3px;left:-13px}.tables input[type=checkbox]:checked+label{opacity:1;transform:scale(1.2);color:#fff;background:#43a047}.active+label{opacity:1;transform:scale(1.2);color:#fff;background:#e74c3c!important}.reserved+label{opacity:1;transform:scale(1.2);color:#fff;background:#e74c3c!important}</style><script src=https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js></script><script src=https://cdnjs.cloudflare.com/ajax/libs/offline-js/0.7.19/offline.min.js></script><div class=container style=margin-top:2%>{% if messages %}<ul class=messages>{% for message in messages %}<div class="alert alert-danger"role=alert><strong>Warning!</strong> {{ message }}</div>{% endfor %}</ul>{% endif %} <a href=/ ><button class="btn btn-primary"type=submit>Refresh</button></a><form action=""id=table-form method=POST><div class=form-group><h3>Choose table:</h3><div class=row><div class=table_area></div></div></div>{% csrf_token %}<div class="row pull-right"><input class="btn btn-primary"type=submit></div></form></div><script>function addTable(status, number) {
+    if (status) {
+        $('.table_area').append("<div class='col-md-3 col-sm-3  col-xs-4 tables'><input class='table_btn active' name='table' id='table_btn" + number + "' type='checkbox' value = '" + number + "' disabled checked/><label for='table_btn" + number + "'>" + number + "</label></div>");
+    } else {
+        $('.table_area').append("<div class='col-md-3 col-sm-3 col-xs-4 tables'><input class='table_btn' name='table' id='table_btn" + number + "' type='checkbox' value = '" + number + "'/><label for='table_btn" + number + "'>" + number + "</label></div>");
+    }
+}
+
+$(document).ready(function () {
+
+    max_table = {{ tables_count |safe }};
+    tables = {{ tables | safe }};
+
+    for (var i = 0; i < max_table; i++) {
+        var t = tables[i].fields;
+        if (t.status === 'vacant') {
+            addTable(false, t.table_no);
+        } else {
+            addTable(true, t.table_no);
+        }
+    }
+
+    $('.table_btn').click(function () {
+        for (var i = 1; i <= max_table; i++) {
+            var id = 'table_btn' + i;
+            if (id === this.id || $('#' + id).hasClass('active')) {
+                continue;
+            }
+            $('#' + id).removeAttr('checked');
+        }
+    });
+
+    $('#table-form').submit(function (event) {
+        event.preventDefault();
+
+        for (var i = 1; i <= max_table; i++) {
+            var id = 'table_btn' + i;
+            if ($('#' + id).hasClass('active')) {
+                $('#' + id).removeAttr('checked');
+            }
+        }
+        this.submit();
+    });
+});
+
+$(document).ready(function () {
+    Offline.options = {
+        checkOnLoad: false,
+        interceptRequests: true,
+        reconnect: {
+            initialDelay: 3
+        },
+        requests: true,
+        game: false
+    };
+    Offline.options = {
+        checks: {
+            xhr: {
+                url: '/internet-check/'
+            }
+        }
+    };
+    setInterval(function () {
+        if (Offline.state === 'up')
+            Offline.check();
+    }, 5000);
+});</script>

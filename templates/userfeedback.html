@@ -1,0 +1,360 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>feedback | Foodcham</title>
+    <link rel="shortcut icon" type="image/png" href="assets/ico/favicon.png"/>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="feedback_files/assests/css/feedback.css">
+    <link href="plugins/offline/offline-theme-dark.css" rel="stylesheet">
+    <link href="plugins/offline/offline-language-english.css" rel="stylesheet">
+    <style>
+        body {
+            -webkit-user-select: none;
+            -moz-user-select: -moz-none;
+            -ms-user-select: none;
+            user-select: none;
+            background-image: url("feedback_files/assests/images/wall.png");
+        }
+    </style>
+</head>
+<body>
+
+<div class="feedback">
+    <form action="" method="POST">
+        {% csrf_token %}
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" data-backdrop="static">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <button type="button" class="close pull-right" data-dismiss="modal" aria-label="Close"
+                                onclick="resetSlides(); window.history.go(-1);">
+                            <span aria-hidden="true">&times;</span></button>
+                        <div class="main">
+                            <img src="feedback_files/assests/images/images.jpg"
+                                 class="img-circle chef_logo" alt="Chef welcomes you">
+                            <img src="feedback_files/assests/images/images.jpg"
+                                 class="img-circle chef_logo" alt="Chef welcomes you" id="firstimg"
+                                 style="display:none;">
+                            <img src="feedback_files/assests/images/Chef-2.png"
+                                 class="img-circle chef_logo" alt="Chef welcomes you" id="secondimg"
+                                 style="display:none;">
+
+                            <ul>
+
+                                <!--       not logged in row        -->
+                                {% if not request.user.is_authenticated %}
+                                    <li class="row">
+                                        <div class="col-xs-12">
+                                            <h2 class="header">
+                                                Oops ! <br>
+                                                You are not logged in to give feedback.
+                                            </h2>
+                                            <hr>
+
+                                            <div class="center">
+                                                <a href="/categories" class="orange_btn btn_big">
+                                                    Go to Menu to Order Something
+                                                    &nbsp;<i class="fa fa-arrow-right"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <!--      nothing in cart row          -->
+                                {% elif item_flag_count %}
+                                    <li class="row">
+                                        <h2 class="header">
+                                            Sorry ! <br>
+                                            You have not added anything to your cart <i class="fa fa-frown-o"></i>
+                                        </h2>
+                                        <hr>
+                                        <div class="center">
+                                            <a href="/categories" class="orange_btn btn_big">
+                                                Go to Menu to Order Something
+                                                &nbsp;<i class="fa fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </li>
+                                    -->
+                                    <!--                main feedback rows-->
+                                {% else %}
+
+                                    <li class="row">
+                                        <div class="col-xs-12">
+                                            <div class="overall_rating">
+                                                <h1 class="center header">Thank You For Ordering With Us</h1>
+                                                <hr>
+                                                <section>
+                                                    <h2 class="center"><strong>How was your Overall Experience
+                                                        ?</strong></h2>
+                                                    <div class="center">
+                                                        <div class="stars">
+                                                            <input class="star star-5" id="star-5" type="radio"
+                                                                   name="overall" value="5"/>
+                                                            <label class="star star-5" for="star-5"></label>
+                                                            <input class="star star-4" id="star-4" type="radio"
+                                                                   name="overall" value="4"/>
+                                                            <label class="star star-4" for="star-4"></label>
+                                                            <input class="star star-3" id="star-3" type="radio"
+                                                                   name="overall" value="3"/>
+                                                            <label class="star star-3" for="star-3"></label>
+                                                            <input class="star star-2" id="star-2" type="radio"
+                                                                   name="overall" value="2"/>
+                                                            <label class="star star-2" for="star-2"></label>
+                                                            <input class="star star-1" id="star-1" type="radio"
+                                                                   name="overall" value="1"/>
+                                                            <label class="star star-1" for="star-1"></label>
+                                                        </div>
+                                                    </div>
+                                                </section>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="row">
+                                        <div class="col-xs-12">
+                                            <h2 class="header center">Please Help Us Grow</h2>
+                                            <hr>
+                                            <section class="specific_rating">
+                                                <table class="">
+                                                    {% for que in restaurant_questions %}
+                                                        <tr>
+                                                            <td>{{ que.title }}</td>
+                                                            <td>
+                                                                <div class="stars">
+
+                                                                    <input class="star star-5"
+                                                                           id="starf-5-{{ que.title|length }}"
+                                                                           type="radio" name="{{ que.title }}"
+                                                                           value="5"/>
+                                                                    <label class="star star-5"
+                                                                           for="starf-5-{{ que.title|length }}"></label>
+                                                                    <input class="star star-4"
+                                                                           id="starf-4-{{ que.title|length }}"
+                                                                           type="radio" name="{{ que.title }}"
+                                                                           value="4"/>
+                                                                    <label class="star star-4"
+                                                                           for="starf-4-{{ que.title|length }}"></label>
+                                                                    <input class="star star-3"
+                                                                           id="starf-3-{{ que.title|length }}"
+                                                                           type="radio" name="{{ que.title }}"
+                                                                           value="3"/>
+                                                                    <label class="star star-3"
+                                                                           for="starf-3-{{ que.title|length }}"></label>
+                                                                    <input class="star star-2"
+                                                                           id="starf-2-{{ que.title|length }}"
+                                                                           type="radio" name="{{ que.title }}"
+                                                                           value="2"/>
+                                                                    <label class="star star-2"
+                                                                           for="starf-2-{{ que.title|length }}"></label>
+                                                                    <input class="star star-1"
+                                                                           id="starf-1-{{ que.title|length }}"
+                                                                           type="radio" name="{{ que.title }}"
+                                                                           value="1"/>
+                                                                    <label class="star star-1"
+                                                                           for="starf-1-{{ que.title|length }}"></label>
+
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+
+                                                    {% endfor %}
+
+                                                </table>
+                                            </section>
+                                            <div class="footer">
+                                                <button type="button" class="btn" onclick="prevSlide();">Previous
+                                                </button>
+                                                <button type="button" class="btn" onclick="nextSlide();">Next</button>
+                                            </div>
+                                        </div>
+                                    </li>
+
+
+                                    <!-- Assumption     -->
+
+                                    <li class="row">
+                                        <div class="col-xs-12">
+                                            <h2 class="header center">How was our</h2>
+                                            <hr>
+                                            <section class="specific_rating specific_item_rating">
+                                                <table>
+                                                    {% for cat in general_category %}
+                                                        <tr>
+                                                            <td>{{ cat }}</td>
+
+                                                            <td>
+                                                                <div class="stars" id="category{{ forloop.counter }}">
+                                                                    <input class="star star-5"
+                                                                           id="starm-5{{ forloop.counter }}"
+                                                                           type="radio" name="{{ cat }}" value="5"/>
+                                                                    <label class="star star-5"
+                                                                           for="starm-5{{ forloop.counter }}"></label>
+                                                                    <input class="star star-4"
+                                                                           id="starm-4{{ forloop.counter }}"
+                                                                           type="radio" name="{{ cat }}" value="4"/>
+                                                                    <label class="star star-4"
+                                                                           for="starm-4{{ forloop.counter }}"></label>
+                                                                    <input class="star star-3"
+                                                                           id="starm-3{{ forloop.counter }}"
+                                                                           type="radio" name="{{ cat }}" value="3"/>
+                                                                    <label class="star star-3"
+                                                                           for="starm-3{{ forloop.counter }}"></label>
+                                                                    <input class="star star-2"
+                                                                           id="starm-2{{ forloop.counter }}"
+                                                                           type="radio" name="{{ cat }}" value="2"/>
+                                                                    <label class="star star-2"
+                                                                           for="starm-2{{ forloop.counter }}"></label>
+                                                                    <input class="star star-1"
+                                                                           id="starm-1{{ forloop.counter }}"
+                                                                           type="radio" name="{{ cat }}" value="1"/>
+                                                                    <label class="star star-1"
+                                                                           for="starm-1{{ forloop.counter }}"></label>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+
+                                                    {% endfor %}
+
+
+                                                </table>
+                                            </section>
+                                            <div class="footer">
+                                                <button type="button" class="btn" onclick="prevSlide();">Previous
+                                                </button>
+                                                <button type="button" class="btn" onclick="nextSlide();">Next</button>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <!-- items by category               -->
+
+                                    {% for cat in general_category %}
+                                        <li class="row category{{ forloop.counter }}">
+                                            <div class="col-xs-12">
+                                                <h2 class="header center">Taste Of {{ cat }} Items</h2>
+                                                <hr>
+                                                <div class="ordered_items">
+                                                    <table>
+                                                        {% for product in products %}
+                                                            {% if cat == product.general_category %}
+                                                                <tr>
+                                                                    <td>{{ product }}</td>
+                                                                    <td>
+                                                                        <div class="stars">
+                                                                            <input class="star star-5"
+                                                                                   id="{{ product }}5{{ forloop.counter }}"
+                                                                                   type="radio" name="{{ product }}"
+                                                                                   value="5"/>
+                                                                            <label class="star star-5"
+                                                                                   for="{{ product }}5{{ forloop.counter }}"></label>
+                                                                            <input class="star star-4"
+                                                                                   id="{{ product }}4{{ forloop.counter }}"
+                                                                                   type="radio" name="{{ product }}"
+                                                                                   value="4"/>
+                                                                            <label class="star star-4"
+                                                                                   for="{{ product }}4{{ forloop.counter }}"></label>
+                                                                            <input class="star star-3"
+                                                                                   id="{{ product }}3{{ forloop.counter }}"
+                                                                                   type="radio" name="{{ product }}"
+                                                                                   value="3"/>
+                                                                            <label class="star star-3"
+                                                                                   for="{{ product }}3{{ forloop.counter }}"></label>
+                                                                            <input class="star star-2"
+                                                                                   id="{{ product }}2{{ forloop.counter }}"
+                                                                                   type="radio" name="{{ product }}"
+                                                                                   value="2"/>
+                                                                            <label class="star star-2"
+                                                                                   for="{{ product }}2{{ forloop.counter }}"></label>
+                                                                            <input class="star star-1"
+                                                                                   id="{{ product }}1{{ forloop.counter }}"
+                                                                                   type="radio" name="{{ product }}"
+                                                                                   value="1"/>
+                                                                            <label class="star star-1"
+                                                                                   for="{{ product }}1{{ forloop.counter }}"></label>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </table>
+                                                </div>
+                                                <div class="footer">
+                                                    <button type="button" class="btn" onclick="prevSlide();">Previous
+                                                    </button>
+                                                    <button type="button" class="btn" onclick="nextSlide();">Next
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+
+
+                                    <li class="row">
+                                        <div class="col-xs-12">
+                                            <h2 class="header center">Please Enter Your Details</h2>
+                                            <hr>
+                                            <div class="details">
+
+                                                <div class="row">
+                                                    <div class="col-xs-3 center"><label for="">Email:</label>
+                                                    </div>
+                                                    <div class="col-xs-9"><input type="email" name="email" id=""
+                                                                                 class="form-control"></div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-xs-3 center"><label for="">Description:</label>
+                                                    </div>
+                                                    <div class="col-xs-9"><textarea name="desc" id=""
+                                                                                    class="form-control"
+                                                                                    rows="5"></textarea></div>
+                                                </div>
+                                            </div>
+                                            <div class="footer">
+                                                <button type="button" class="btn" onclick="prevSlide();">Previous
+                                                </button>
+                                                <button type="submit" class="btn" onclick="">Submit</button>
+                                            </div>
+                                        </div>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/offline-js/0.7.19/offline.min.js"></script>
+<script src="feedback_files/assests/js/feedback.js"></script>
+<script>
+    $(document).ready(function () {
+        Offline.options = {
+            checkOnLoad: false,
+            interceptRequests: true,
+            reconnect: {
+                initialDelay: 3
+            },
+            requests: true,
+            game: false
+        };
+        Offline.options = {
+            checks: {
+                xhr: {
+                    url: '/internet-check/'
+                }
+            }
+        };
+        setInterval(function () {
+            if (Offline.state === 'up')
+                Offline.check();
+        }, 5000);
+    });
+</script>
+</body>
+</html>
